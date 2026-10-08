@@ -1,0 +1,16 @@
+# Archivos de compilación de Maven
+target/
+*.class
+
+# Configuraciones locales de Eclipse
+.settings/
+.project
+.classpath
+
+# Logs y servidor local
+Servers/
+*.log
+
+# Archivos del sistema operativo (macOS / Windows)
+.DS_Store
+Thumbs.db
