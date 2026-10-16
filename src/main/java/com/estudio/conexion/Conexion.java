@@ -9,7 +9,7 @@ public class Conexion {
     // parametros de la conexion local
     private static final String URL = "jdbc:mysql://localhost:3306/gestion_estudio_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true";
     private static final String USER = "root";
-    private static final String PASS = "root"; 
+    private static final String PASS = "root";
 
     // Driver moderno de MySQL
     private static final String DRIVER = "com.mysql.cj.jdbc.Driver";

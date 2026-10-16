@@ -14,3 +14,7 @@ Servers/
 # Archivos del sistema operativo (macOS / Windows)
 .DS_Store
 Thumbs.db
+
+# Configuraciones locales de IntelliJ IDEA
+.idea/
+*.iml
