@@ -10,21 +10,24 @@ import java.sql.SQLException;
 
 public class UsuarioDAO {
 
-    // Metodo para registrar un nuevo estudiante
     public boolean registrar(Usuario usuario) {
-        String sql = "INSERT INTO usuarios (nombre, apellido, email, password, carrera) VALUES (?, ?, ?, ?, ?)";
-        
+        String sql = "INSERT INTO usuarios (nombre, apellido, email, password, carrera, " +
+                     "pref_comunicacion, requiere_espacio_accesible, pref_material_digital) " +
+                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+
         try (Connection con = Conexion.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, usuario.getNombre());
             ps.setString(2, usuario.getApellido());
             ps.setString(3, usuario.getEmail());
-            ps.setString(4, usuario.getPassword()); 
+            ps.setString(4, usuario.getPassword());
             ps.setString(5, usuario.getCarrera());
+            ps.setString(6, usuario.getPrefComunicacion() != null ? usuario.getPrefComunicacion() : "Indistinto");
+            ps.setBoolean(7, usuario.isRequiereEspacioAccesible());
+            ps.setBoolean(8, usuario.isPrefMaterialDigital());
 
-            int filasAfectadas = ps.executeUpdate();
-            return filasAfectadas > 0;
+            return ps.executeUpdate() > 0;
 
         } catch (SQLException e) {
             System.err.println("Error al registrar usuario: " + e.getMessage());
@@ -33,9 +36,9 @@ public class UsuarioDAO {
         }
     }
 
-    // Metodo para validar credenciales en el login
     public Usuario login(String email, String password) {
-        String sql = "SELECT id_usuario, nombre, apellido, email, password, carrera, fecha_registro " +
+        String sql = "SELECT id_usuario, nombre, apellido, email, password, carrera, " +
+                     "pref_comunicacion, requiere_espacio_accesible, pref_material_digital, fecha_registro " +
                      "FROM usuarios WHERE email = ? AND password = ?";
         Usuario usuario = null;
 
@@ -54,6 +57,9 @@ public class UsuarioDAO {
                     usuario.setEmail(rs.getString("email"));
                     usuario.setPassword(rs.getString("password"));
                     usuario.setCarrera(rs.getString("carrera"));
+                    usuario.setPrefComunicacion(rs.getString("pref_comunicacion"));
+                    usuario.setRequiereEspacioAccesible(rs.getBoolean("requiere_espacio_accesible"));
+                    usuario.setPrefMaterialDigital(rs.getBoolean("pref_material_digital"));
                     usuario.setFechaRegistro(rs.getTimestamp("fecha_registro"));
                 }
             }
@@ -66,7 +72,6 @@ public class UsuarioDAO {
         return usuario;
     }
 
-    // Metodo opcional para verificar si el email ya existe antes de registrar
     public boolean existeEmail(String email) {
         String sql = "SELECT id_usuario FROM usuarios WHERE email = ?";
         try (Connection con = Conexion.getConnection();
@@ -84,21 +89,23 @@ public class UsuarioDAO {
         }
     }
 
-    // Main para verificar las operaciones directamente contra MySQL
+    // Main para verificar contra MySQL
     public static void main(String[] args) {
         UsuarioDAO dao = new UsuarioDAO();
 
-        // 1. Probar agregar usuario
-        Usuario nuevo = new Usuario("Agustín", "Nazer", "test@estudio.com", "123456", "Programación");
-        boolean insertado = dao.registrar(nuevo);
-        System.out.println("¿Usuario registrado con éxito?: " + insertado);
+        // 1. Probar registro con campos de accesibilidad
+        Usuario nuevo = new Usuario("Test", "Accesible", "test_acc@estudio.com", "pass123", "Programación", "Voz", true, false);
+        boolean registrado = dao.registrar(nuevo);
+        System.out.println("¿Usuario registrado con accesibilidad?: " + registrado);
 
-        // 2. Probar login 
-        Usuario logueado = dao.login("test@estudio.com", "123456");
-        if (logueado != null) {
-            System.out.println("Login exitoso. Bienvenido " + logueado.getNombre() + " (ID: " + logueado.getIdUsuario() + ")");
+        // 2. Probar login recuperando las preferencias
+        Usuario usuarioLogueado = dao.login("test_acc@estudio.com", "pass123");
+        if (usuarioLogueado != null) {
+            System.out.println("Login OK: " + usuarioLogueado.getNombre() + 
+                               " | Requiere espacio: " + usuarioLogueado.isRequiereEspacioAccesible() +
+                               " | Pref comunicación: " + usuarioLogueado.getPrefComunicacion());
         } else {
-            System.out.println("Credenciales incorrectas.");
+            System.err.println("Error al loguear.");
         }
     }
 }

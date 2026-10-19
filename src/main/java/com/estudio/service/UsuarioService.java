@@ -13,11 +13,19 @@ public class UsuarioService {
 		validarCampo(u.getNombre(), "El nombre es obligatorio");
 		validarCampo(u.getApellido(), "El apellido es obligatorio");
 		validarCampo(u.getEmail(), "El email es obligatorio");
+		validarCampo(u.getCarrera(), "La carrera es obligatoria");
 		validarCampo(u.getPassword(), "La contraseña es obligatoria");
 		
 		u.setNombre(u.getNombre().trim());
 		u.setApellido(u.getApellido().trim());
 		u.setEmail(u.getEmail().trim());
+		u.setCarrera(u.getCarrera().trim());
+		
+		// Si la preferencia vino vacia, se deja por defecto
+		if (u.getPrefComunicacion() == null || u.getPrefComunicacion().trim().isEmpty()) {
+			u.setPrefComunicacion("Indistinto");
+		}
+		
 		
 		if (!u.getEmail().matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
 			throw new IllegalArgumentException("El email no tiene un formato válido");
