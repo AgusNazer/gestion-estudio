@@ -22,6 +22,11 @@
     <p><strong>Pref. Comunicación:</strong> <%= usuario.getPrefComunicacion() %></p>
     <p><strong>Espacio Accesible:</strong> <%= usuario.isRequiereEspacioAccesible() %></p>
     <p><strong>Material Digital:</strong> <%= usuario.isPrefMaterialDigital() %></p>
+    <hr>
+<h3>Acciones</h3>
+<p>
+    <a href="crear-grupo.jsp"><button type="button">Crear Nuevo Grupo de Estudio</button></a>
+</p>
 
     <p><a href="auth?accion=logout">Cerrar Sesión</a></p>
 </body>

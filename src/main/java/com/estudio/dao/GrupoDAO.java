@@ -4,6 +4,7 @@ import com.estudio.conexion.Conexion;
 import com.estudio.model.Grupo;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class GrupoDAO {
@@ -25,12 +26,34 @@ public class GrupoDAO {
             ps.setString(9, g.getEstado());
 
             int filasAfectadas = ps.executeUpdate();
-            return filasAfectadas > 0; // Si insertó al menos 1 fila, devuelve true
+            return filasAfectadas > 0;
 
         } catch (SQLException e) {
             System.err.println("Error al guardar el grupo en la BD.");
             e.printStackTrace();
             return false;
         }
+    }
+
+    public boolean existeGrupoPorNombreYCreador(String nombre, int idCreador) {
+        String sql = "SELECT COUNT(*) FROM grupos WHERE LOWER(TRIM(nombre)) = LOWER(TRIM(?)) AND id_creador = ? AND estado != 'Cerrado'";
+
+        try (Connection con = Conexion.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, nombre);
+            ps.setInt(2, idCreador);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Error al validar existencia de grupo en la BD: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return false;
     }
 }
