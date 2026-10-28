@@ -56,4 +56,81 @@ public class GrupoDAO {
         }
         return false;
     }
+    public Grupo obtenerPorId(int idGrupo) {
+        Grupo grupo = null;
+        String sql = "SELECT * FROM grupos WHERE id_grupo = ?";
+
+        try (Connection con = Conexion.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, idGrupo);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    grupo = new Grupo();
+                    grupo.setNombre(rs.getString("nombre"));
+                    grupo.setMateria(rs.getString("materia"));
+                    grupo.setHorarios(rs.getString("horarios"));
+                    grupo.setModalidad(rs.getString("modalidad"));
+                    grupo.setCupoMaximo(rs.getInt("cupo_maximo"));
+                    grupo.setObjetivo(rs.getString("objetivo"));
+                    grupo.setEspacioAccesible(rs.getBoolean("espacio_accesible"));
+                    // idCreador y estado
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al obtener el grupo por ID en la BD.");
+            e.printStackTrace();
+        }
+        return grupo;
+    }
+    public int contarMiembros(int idGrupo) {
+        int cantidad = 0;
+        String sql = "SELECT COUNT(*) FROM miembros_grupo WHERE id_grupo = ?";
+
+        try (Connection con = Conexion.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, idGrupo);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    cantidad = rs.getInt(1);
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al contar los miembros del grupo en la BD.");
+            e.printStackTrace();
+        }
+        return cantidad;
+    }
+    public boolean agregarMiembro(int idGrupo, int idUsuario, String rol) {
+        String sql = "INSERT INTO miembros_grupo (id_grupo, id_usuario) VALUES (?, ?)";
+        try (Connection con = Conexion.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, idGrupo);
+            ps.setInt(2, idUsuario);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.err.println("Error SQL al insertar miembro: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
+    public boolean esMiembro(int idGrupo, int idUsuario) {
+        String sql = "SELECT COUNT(*) FROM miembros_grupo WHERE id_grupo = ? AND id_usuario = ?";
+        try (Connection con = Conexion.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, idGrupo);
+            ps.setInt(2, idUsuario);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }

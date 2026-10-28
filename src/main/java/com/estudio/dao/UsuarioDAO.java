@@ -108,4 +108,37 @@ public class UsuarioDAO {
             System.err.println("Error al loguear.");
         }
     }
+
+    public Usuario obtenerPorId(int idUsuario) {
+        Usuario usuario = null;
+        String sql = "SELECT * FROM usuarios WHERE id_usuario = ?";
+
+        try (Connection con = Conexion.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, idUsuario);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    //constructor de lectura de BD
+                    usuario = new Usuario(
+                            rs.getInt("id_usuario"),
+                            rs.getString("nombre"),
+                            rs.getString("apellido"),
+                            rs.getString("email"),
+                            rs.getString("password"),
+                            rs.getString("carrera"),
+                            rs.getString("pref_comunicacion"),
+                            rs.getBoolean("requiere_espacio_accesible"),
+                            rs.getBoolean("pref_material_digital"),
+                            rs.getTimestamp("fecha_registro")
+                    );
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al obtener el usuario por ID en la BD.");
+            e.printStackTrace();
+        }
+        return usuario;
+    }
 }
