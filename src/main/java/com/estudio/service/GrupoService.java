@@ -16,7 +16,7 @@ public class GrupoService {
             throw new IllegalArgumentException("El cupo mínimo debe ser de 2 personas.");
         }
 
-        // New check to prevent duplicate groups
+        // evita crear grupos duplicaos
         if (grupoDAO.existeGrupoPorNombreYCreador(g.getNombre(), g.getIdCreador())) {
             throw new IllegalArgumentException("Ya tenés un grupo activo con ese nombre.");
         }
