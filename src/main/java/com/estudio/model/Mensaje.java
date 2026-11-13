@@ -20,6 +20,16 @@ public class Mensaje {
 		this.mensaje = mensaje;
 	}
 
+	private String nombreUsuario;
+
+	public String getNombreUsuario() {
+		return nombreUsuario;
+	}
+
+	public void setNombreUsuario(String nombreUsuario) {
+		this.nombreUsuario = nombreUsuario;
+	}
+
 	public int getIdMensaje() {
 		return idMensaje;
 	}

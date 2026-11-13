@@ -39,8 +39,31 @@
 <p>
     <a href="crear-grupo.jsp"><button type="button">Crear Nuevo Grupo de Estudio</button></a>
     <p><a href="buscar-grupos.jsp">Buscar Grupos de Estudio</a></p>
+    <h3>Mis Grupos de Estudio (Chat y Reuniones)</h3>
+        <ul>
+        <%
+            com.estudio.dao.GrupoDAO gDao = new com.estudio.dao.GrupoDAO();
+            java.util.List<com.estudio.model.Grupo> todos = gDao.listarTodos();
+            boolean tieneGrupos = false;
+            for (com.estudio.model.Grupo g : todos) {
+                if (g.getIdCreador() == usuario.getIdUsuario() || gDao.esMiembro(g.getIdGrupo(), usuario.getIdUsuario())) {
+                    tieneGrupos = true;
+        %>
+                    <li>
+                        <strong><%= g.getNombre() %></strong> (<%= g.getMateria() %>) -
+                        <a href="grupo-detalle?idGrupo=<%= g.getIdGrupo() %>">Ir al Chat y Reuniones</a>
+                    </li>
+        <%
+                }
+            }
+            if (!tieneGrupos) {
+        %>
+                <li>Todavía no estás inscripto en ningún grupo.</li>
+        <%  } %>
+        </ul>
 </p>
 
     <p><a href="auth?accion=logout">Cerrar Sesión</a></p>
+
 </body>
 </html>
