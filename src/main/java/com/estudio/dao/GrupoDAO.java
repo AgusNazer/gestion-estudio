@@ -6,6 +6,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GrupoDAO {
 
@@ -56,6 +58,7 @@ public class GrupoDAO {
         }
         return false;
     }
+
     public Grupo obtenerPorId(int idGrupo) {
         Grupo grupo = null;
         String sql = "SELECT * FROM grupos WHERE id_grupo = ?";
@@ -68,6 +71,7 @@ public class GrupoDAO {
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     grupo = new Grupo();
+                    grupo.setIdGrupo(rs.getInt("id_grupo"));
                     grupo.setNombre(rs.getString("nombre"));
                     grupo.setMateria(rs.getString("materia"));
                     grupo.setHorarios(rs.getString("horarios"));
@@ -75,7 +79,8 @@ public class GrupoDAO {
                     grupo.setCupoMaximo(rs.getInt("cupo_maximo"));
                     grupo.setObjetivo(rs.getString("objetivo"));
                     grupo.setEspacioAccesible(rs.getBoolean("espacio_accesible"));
-                    // idCreador y estado
+                    grupo.setIdCreador(rs.getInt("id_creador"));
+                    grupo.setEstado(rs.getString("estado"));
                 }
             }
         } catch (SQLException e) {
@@ -84,6 +89,7 @@ public class GrupoDAO {
         }
         return grupo;
     }
+
     public int contarMiembros(int idGrupo) {
         int cantidad = 0;
         String sql = "SELECT COUNT(*) FROM miembros_grupo WHERE id_grupo = ?";
@@ -104,6 +110,7 @@ public class GrupoDAO {
         }
         return cantidad;
     }
+
     public boolean agregarMiembro(int idGrupo, int idUsuario, String rol) {
         String sql = "INSERT INTO miembros_grupo (id_grupo, id_usuario) VALUES (?, ?)";
         try (Connection con = Conexion.getConnection();
@@ -117,6 +124,7 @@ public class GrupoDAO {
             return false;
         }
     }
+
     public boolean esMiembro(int idGrupo, int idUsuario) {
         String sql = "SELECT COUNT(*) FROM miembros_grupo WHERE id_grupo = ? AND id_usuario = ?";
         try (Connection con = Conexion.getConnection();
@@ -132,5 +140,34 @@ public class GrupoDAO {
             e.printStackTrace();
         }
         return false;
+    }
+
+    public List<Grupo> listarTodos() {
+        List<Grupo> grupos = new ArrayList<>();
+        String sql = "SELECT * FROM grupos";
+
+        try (Connection con = Conexion.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                Grupo g = new Grupo();
+                g.setIdGrupo(rs.getInt("id_grupo"));
+                g.setNombre(rs.getString("nombre"));
+                g.setMateria(rs.getString("materia"));
+                g.setHorarios(rs.getString("horarios"));
+                g.setModalidad(rs.getString("modalidad"));
+                g.setCupoMaximo(rs.getInt("cupo_maximo"));
+                g.setObjetivo(rs.getString("objetivo"));
+                g.setEspacioAccesible(rs.getBoolean("espacio_accesible"));
+                g.setIdCreador(rs.getInt("id_creador"));
+                g.setEstado(rs.getString("estado"));
+                grupos.add(g);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al listar los grupos de la BD.");
+            e.printStackTrace();
+        }
+        return grupos;
     }
 }

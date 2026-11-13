@@ -5,6 +5,8 @@ import com.estudio.dao.MensajeDAO;
 import com.estudio.model.Grupo;
 import com.estudio.model.Mensaje;
 
+import java.util.List;
+
 public class MensajeService {
 
 	private final MensajeDAO mensajeDAO = new MensajeDAO();
@@ -32,5 +34,12 @@ public class MensajeService {
 		}
 
 		return mensajeDAO.crearMensaje(m);
+	}
+
+	public List<Mensaje> listarMensajes(int idGrupo) {
+		if (idGrupo <= 0) {
+			throw new IllegalArgumentException("El grupo no es válido");
+		}
+		return mensajeDAO.listarPorGrupo(idGrupo);
 	}
 }

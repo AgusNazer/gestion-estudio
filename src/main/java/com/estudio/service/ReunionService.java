@@ -28,10 +28,20 @@ public class ReunionService {
             throw new IllegalArgumentException("Los temas no pueden superar los 255 caracteres");
         }
 
+        if (fecha == null) {
+            throw new IllegalArgumentException("La fecha es obligatoria");
+        }
+        if (fecha.toLocalDate().isBefore(java.time.LocalDate.now())) {
+            throw new IllegalArgumentException("No se puede agendar una reunión en una fecha pasada");
+        }
+
         Reunion reunion = new Reunion(idGrupo, fecha, temasTratados.trim());
 
         return reunionDAO.crear(reunion);
+
     }
+
+
 
     public List<Reunion> listarReuniones(int idGrupo) {
 
