@@ -22,6 +22,7 @@
     <meta charset="UTF-8">
     <title>Listado de Grupos Disponibles</title>
 </head>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/estilos.css">
 <body>
     <h2>Listado de Grupos de Estudio</h2>
     <p>Usuario conectado: <strong><%= usuario.getNombre() %> <%= usuario.getApellido() %></strong></p>

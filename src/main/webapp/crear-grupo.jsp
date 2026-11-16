@@ -14,9 +14,10 @@
     <meta charset="UTF-8">
     <title>Crear Grupo de Estudio - RF2</title>
 </head>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/estilos.css">
 <body>
 
-    <h2>[PROVISORIO] Crear Grupo de Estudio</h2>
+    <h2>Crear Grupo de Estudio</h2>
 
     <p>Creador: <strong><%= usuarioLogueado.getNombre() %> <%= usuarioLogueado.getApellido() %></strong></p>
 

@@ -13,6 +13,7 @@
     <meta charset="UTF-8">
     <title>[TEST] Dashboard</title>
 </head>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/estilos.css">
 <body>
     <h2>Sesión Iniciada con Éxito</h2>
     <%

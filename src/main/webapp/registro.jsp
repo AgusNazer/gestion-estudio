@@ -5,8 +5,9 @@
     <meta charset="UTF-8">
     <title>[TEST] Registro</title>
 </head>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/estilos.css">
 <body>
-    <h2>[PROVISORIO] Registro de Usuario</h2>
+    <h2>Registro de Usuario</h2>
 
     <% String error = (String) request.getAttribute("error"); %>
     <% if (error != null) { %>

@@ -19,6 +19,7 @@
     <meta charset="UTF-8">
     <title>Grupo de Estudio #<%= idGrupo %></title>
 </head>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/estilos.css">
 <body>
     <h2>Espacio del Grupo #<%= idGrupo %></h2>
 

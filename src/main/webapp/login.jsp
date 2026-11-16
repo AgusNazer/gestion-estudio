@@ -5,8 +5,9 @@
     <meta charset="UTF-8">
     <title>[TEST] Login</title>
 </head>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/estilos.css">
 <body>
-    <h2>[PROVISORIO] Iniciar Sesión</h2>
+    <h2>Iniciar Sesión</h2>
 
     <% String error = (String) request.getAttribute("error"); %>
     <% if (error != null) { %>
