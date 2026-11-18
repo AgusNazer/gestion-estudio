@@ -7,7 +7,7 @@ import java.sql.SQLException;
 public class Conexion {
 
     // parametros de la conexion local
-    private static final String URL = "jdbc:mysql://localhost:3306/gestion_estudio_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true";
+    private static final String URL = "jdbc:mysql://localhost:3306/gestion_estudio_db?useSSL=false&serverTimezone=America/Argentina/Buenos_Aires&allowPublicKeyRetrieval=true";
     private static final String USER = "root";
     private static final String PASS = "root";
 
