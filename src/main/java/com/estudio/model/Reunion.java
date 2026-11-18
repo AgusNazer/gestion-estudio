@@ -59,4 +59,14 @@ public class Reunion {
     public void setFechaRegistro(Timestamp fechaRegistro) {
         this.fechaRegistro = fechaRegistro;
     }
+    
+    private String asistentes;
+
+    public String getAsistentes() {
+        return asistentes;
+    }
+
+    public void setAsistentes(String asistentes) {
+        this.asistentes = asistentes;
+    }
 }

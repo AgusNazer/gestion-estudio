@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import com.estudio.model.Usuario;
 
 public class GrupoDAO {
 
@@ -169,5 +170,35 @@ public class GrupoDAO {
             e.printStackTrace();
         }
         return grupos;
+    }
+    
+    // Integrantes de un grupo: el creador y los miembros aceptados
+    public List<Usuario> listarIntegrantes(int idGrupo) {
+        List<Usuario> integrantes = new ArrayList<>();
+        String sql = "SELECT id_usuario, nombre, apellido FROM usuarios "
+                   + "WHERE id_usuario = (SELECT id_creador FROM grupos WHERE id_grupo = ?) "
+                   + "OR id_usuario IN (SELECT id_usuario FROM miembros_grupo WHERE id_grupo = ?) "
+                   + "ORDER BY nombre, apellido";
+
+        try (Connection con = Conexion.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, idGrupo);
+            ps.setInt(2, idGrupo);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Usuario u = new Usuario();
+                    u.setIdUsuario(rs.getInt("id_usuario"));
+                    u.setNombre(rs.getString("nombre"));
+                    u.setApellido(rs.getString("apellido"));
+                    integrantes.add(u);
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al listar los integrantes del grupo en la BD.");
+            e.printStackTrace();
+        }
+        return integrantes;
     }
 }

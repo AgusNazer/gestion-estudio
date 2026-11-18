@@ -15,6 +15,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.Date;
 import java.util.List;
+import java.util.ArrayList;
 
 @WebServlet("/grupo-detalle")
 public class GrupoDetalleServlet extends HttpServlet {
@@ -33,6 +34,7 @@ public class GrupoDetalleServlet extends HttpServlet {
 
             request.setAttribute("reuniones", reuniones);
             request.setAttribute("mensajes", mensajes);
+            request.setAttribute("integrantes", reunionService.listarIntegrantes(idGrupo));
             request.setAttribute("idGrupo", idGrupo);
         } catch (Exception e) {
             request.setAttribute("error", e.getMessage());
@@ -64,12 +66,24 @@ public class GrupoDetalleServlet extends HttpServlet {
                 Mensaje nuevoMensaje = new Mensaje(idGrupo, idUsuario, texto);
                 mensajeService.crearMensaje(nuevoMensaje);
                 request.getSession().setAttribute("mensajeExito", "Mensaje enviado correctamente.");
-            } else if ("reunion".equals(accion)) {
-                Date fecha = Date.valueOf(request.getParameter("fecha"));
-                String temas = request.getParameter("temasTratados");
-                reunionService.crearReunion(idGrupo, fecha, temas);
-                request.getSession().setAttribute("mensajeExito", "Reunión registrada exitosamente.");
-            }
+	            } else if ("reunion".equals(accion)) {
+	                Date fecha = Date.valueOf(request.getParameter("fecha"));
+	                String temas = request.getParameter("temasTratados");
+	                reunionService.crearReunion(idGrupo, fecha, temas);
+	                request.getSession().setAttribute("mensajeExito", "Reunión registrada exitosamente.");
+	            } else if ("reunionRealizada".equals(accion)) {
+	                Date fecha = Date.valueOf(request.getParameter("fecha"));
+	                String temas = request.getParameter("temasTratados");
+	                List<Integer> asistentes = new ArrayList<>();
+	                String[] idsAsistentes = request.getParameterValues("asistentes");
+	                if (idsAsistentes != null) {
+	                    for (String id : idsAsistentes) {
+	                        asistentes.add(Integer.parseInt(id));
+	                    }
+	                }
+	                reunionService.registrarReunionRealizada(idGrupo, fecha, temas, asistentes);
+	                request.getSession().setAttribute("mensajeExito", "Reunión realizada registrada exitosamente.");
+	            }
         } catch (IllegalArgumentException e) {
             request.getSession().setAttribute("mensajeError", e.getMessage());
         } catch (Exception e) {

@@ -3,6 +3,7 @@
 <%@ page import="com.estudio.model.Reunion" %>
 <%@ page import="com.estudio.model.Mensaje" %>
 <%@ page import="com.estudio.model.Usuario" %>
+<%@ page import="java.util.ArrayList" %>
 <%
     Usuario usuario = (Usuario) session.getAttribute("usuarioLogueado");
     if (usuario == null) {
@@ -12,6 +13,20 @@
     int idGrupo = (request.getAttribute("idGrupo") != null) ? (Integer) request.getAttribute("idGrupo") : 1;
     List<Reunion> reuniones = (List<Reunion>) request.getAttribute("reuniones");
     List<Mensaje> mensajes = (List<Mensaje>) request.getAttribute("mensajes");
+    List<Usuario> integrantes = (List<Usuario>) request.getAttribute("integrantes");
+    
+    java.time.LocalDate hoy = java.time.LocalDate.now();
+    List<Reunion> proximas = new ArrayList<>();
+    List<Reunion> realizadas = new ArrayList<>();
+    if (reuniones != null) {
+        for (Reunion r : reuniones) {
+            if (r.getFecha().toLocalDate().isAfter(hoy)) {
+                proximas.add(r);
+            } else {
+                realizadas.add(r);
+            }
+        }
+    }
 %>
 <!DOCTYPE html>
 <html>
@@ -38,15 +53,15 @@
     <% } %>
 
     <hr>
-    <h3>Reuniones del Grupo (RF6)</h3>
+        <h3>Próximas reuniones</h3>
     <table border="1" cellpadding="5" cellspacing="0">
         <tr>
             <th>ID</th>
             <th>Fecha</th>
-            <th>Temas a Tratar</th>
+            <th>Temas a tratar</th>
         </tr>
-        <% if (reuniones != null && !reuniones.isEmpty()) {
-            for (Reunion r : reuniones) { %>
+        <% if (!proximas.isEmpty()) {
+            for (Reunion r : proximas) { %>
             <tr>
                 <td><%= r.getIdReunion() %></td>
                 <td><%= r.getFecha() %></td>
@@ -55,7 +70,31 @@
         <%  }
            } else { %>
             <tr>
-                <td colspan="3">No hay reuniones programadas para este grupo.</td>
+                <td colspan="3">No hay reuniones próximas agendadas.</td>
+            </tr>
+        <% } %>
+    </table>
+
+    <h3>Reuniones realizadas</h3>
+    <table border="1" cellpadding="5" cellspacing="0">
+        <tr>
+            <th>ID</th>
+            <th>Fecha</th>
+            <th>Temas tratados</th>
+            <th>Asistentes</th>
+        </tr>
+        <% if (!realizadas.isEmpty()) {
+            for (Reunion r : realizadas) { %>
+            <tr>
+                <td><%= r.getIdReunion() %></td>
+                <td><%= r.getFecha() %></td>
+                <td><%= r.getTemasTratados() %></td>
+                <td><%= (r.getAsistentes() != null) ? r.getAsistentes() : "Sin asistencia registrada" %></td>
+            </tr>
+        <%  }
+           } else { %>
+            <tr>
+                <td colspan="4">Todavía no hay reuniones realizadas registradas.</td>
             </tr>
         <% } %>
     </table>
@@ -70,6 +109,29 @@
         <label>Temas:</label>
         <input type="text" name="temasTratados" placeholder="Ej: Repaso general" required>
         <button type="submit">Guardar Reunión</button>
+    </form>
+    
+        <h4>Registrar Reunión Realizada</h4>
+    <form action="grupo-detalle" method="post">
+        <input type="hidden" name="accion" value="reunionRealizada">
+        <input type="hidden" name="idGrupo" value="<%= idGrupo %>">
+        <input type="hidden" name="idUsuario" value="<%= idUsuarioActual %>">
+        <label for="fechaRealizada">Fecha:</label>
+        <input type="date" id="fechaRealizada" name="fecha" max="<%= java.time.LocalDate.now() %>" required>
+        <label for="temasRealizada">Temas tratados:</label>
+        <input type="text" id="temasRealizada" name="temasTratados" placeholder="Ej: Repaso de listas" required>
+        <fieldset>
+            <legend>Participantes presentes:</legend>
+            <% if (integrantes != null) {
+                for (Usuario u : integrantes) { %>
+                <label>
+                    <input type="checkbox" name="asistentes" value="<%= u.getIdUsuario() %>">
+                    <%= u.getNombre() %> <%= u.getApellido() %>
+                </label><br>
+            <%  }
+               } %>
+        </fieldset>
+        <button type="submit">Registrar Reunión</button>
     </form>
 
     <hr>
