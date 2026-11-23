@@ -63,14 +63,17 @@
 
         <div>
             <label for="cupoMaximo">Cupo Máximo de integrantes:</label><br>
-            <input type="number" id="cupoMaximo" name="cupoMaximo" min="2" max="10" value="4" required>
+            <input type="number" id="cupoMaximo" name="cupoMaximo" min="2" max="6" value="4" required>
         </div>
         <br>
 
         <div>
-            <label for="objetivo">Objetivo del grupo:</label><br>
-            <textarea id="objetivo" name="objetivo" rows="3" cols="30" placeholder="Ej: Preparar TP integrador y finales"></textarea>
-        </div>
+		    <label for="objetivo">Objetivo del grupo:</label><br>
+		    <select id="objetivo" name="objetivo" required>
+		        <option value="Preparar parcial">Preparar parcial</option>
+		        <option value="Estudio regular">Estudio regular</option>
+		    </select>
+		</div>
         <br>
 
         <div>

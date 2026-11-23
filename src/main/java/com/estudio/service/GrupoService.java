@@ -12,8 +12,12 @@ public class GrupoService {
         if (g.getNombre() == null || g.getNombre().trim().isEmpty()) {
             throw new IllegalArgumentException("El nombre del grupo es obligatorio.");
         }
-        if (g.getCupoMaximo() < 2) {
-            throw new IllegalArgumentException("El cupo mínimo debe ser de 2 personas.");
+        if (g.getCupoMaximo() < 2 || g.getCupoMaximo() > 6) {
+            throw new IllegalArgumentException("Datos de horario o cupo inválidos.");
+        }
+        if (g.getObjetivo() == null
+                || !(g.getObjetivo().equals("Preparar parcial") || g.getObjetivo().equals("Estudio regular"))) {
+            throw new IllegalArgumentException("Debe seleccionar un objetivo válido.");
         }
 
         // evita crear grupos duplicaos

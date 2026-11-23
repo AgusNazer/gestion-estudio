@@ -10,11 +10,12 @@ public class UsuarioService {
 		if (u == null) {
 			throw new IllegalArgumentException("Los datos del usuario son obligatorios");
 		}
-		validarCampo(u.getNombre(), "El nombre es obligatorio");
-		validarCampo(u.getApellido(), "El apellido es obligatorio");
-		validarCampo(u.getEmail(), "El email es obligatorio");
-		validarCampo(u.getCarrera(), "La carrera es obligatoria");
-		validarCampo(u.getPassword(), "La contraseña es obligatoria");
+		String faltantes = "Debe completar todos los datos requeridos para el alta.";
+		validarCampo(u.getNombre(), faltantes);
+		validarCampo(u.getApellido(), faltantes);
+		validarCampo(u.getEmail(), faltantes);
+		validarCampo(u.getCarrera(), faltantes);
+		validarCampo(u.getPassword(), faltantes);
 		
 		u.setNombre(u.getNombre().trim());
 		u.setApellido(u.getApellido().trim());
@@ -30,11 +31,13 @@ public class UsuarioService {
 		if (!u.getEmail().matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
 			throw new IllegalArgumentException("El email no tiene un formato válido");
 		}
-		if (u.getPassword().length() < 8) {
-			throw new IllegalArgumentException("La contraseña debe tener al menos 8 caracteres");
+		if (u.getPassword().length() < 8
+		        || !u.getPassword().matches(".*[A-Za-z].*")
+		        || !u.getPassword().matches(".*[0-9].*")) {
+		    throw new IllegalArgumentException("La contraseña debe tener al menos 8 caracteres e incluir letras y números.");
 		}
 		if (usuarioDAO.existeEmail(u.getEmail())) {
-			throw new IllegalArgumentException("El email ya está registrado");
+			throw new IllegalArgumentException("El correo electrónico ya se encuentra registrado.");
 		}
 		return usuarioDAO.registrar(u);
 	}
