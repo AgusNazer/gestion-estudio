@@ -26,7 +26,8 @@ public class MatchService {
             return "Solicitud rechazada: ya formas parte o eres el creador de este grupo.";
         }
 
-        int miembrosActuales = grupoDAO.contarMiembros(solicitud.getIdGrupo());
+        // +1 para contar al creador
+        int miembrosActuales = grupoDAO.contarMiembros(solicitud.getIdGrupo()) + 1;
         if (miembrosActuales >= grupo.getCupoMaximo()) {
             solicitud.setEstado("Rechazada");
             solicitudDAO.actualizarEstado(solicitud);

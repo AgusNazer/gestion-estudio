@@ -4,6 +4,7 @@
 <%@ page import="com.estudio.model.Mensaje" %>
 <%@ page import="com.estudio.model.Usuario" %>
 <%@ page import="java.util.ArrayList" %>
+<%@ page import="java.text.SimpleDateFormat" %>
 <%
     Usuario usuario = (Usuario) session.getAttribute("usuarioLogueado");
     if (usuario == null) {
@@ -16,6 +17,8 @@
     List<Usuario> integrantes = (List<Usuario>) request.getAttribute("integrantes");
     
     java.time.LocalDate hoy = java.time.LocalDate.now();
+    SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+    SimpleDateFormat formatoDia = new SimpleDateFormat("dd/MM/yyyy");
     List<Reunion> proximas = new ArrayList<>();
     List<Reunion> realizadas = new ArrayList<>();
     if (reuniones != null) {
@@ -64,7 +67,7 @@
             for (Reunion r : proximas) { %>
             <tr>
                 <td><%= r.getIdReunion() %></td>
-                <td><%= r.getFecha() %></td>
+                <td><%= formatoDia.format(r.getFecha()) %></td>
                 <td><%= r.getTemasTratados() %></td>
             </tr>
         <%  }
@@ -87,7 +90,7 @@
             for (Reunion r : realizadas) { %>
             <tr>
                 <td><%= r.getIdReunion() %></td>
-                <td><%= r.getFecha() %></td>
+                <td><%= formatoDia.format(r.getFecha()) %></td>
                 <td><%= r.getTemasTratados() %></td>
                 <td><%= (r.getAsistentes() != null) ? r.getAsistentes() : "Sin asistencia registrada" %></td>
             </tr>
@@ -141,7 +144,7 @@
             for (Mensaje m : mensajes) { %>
                 <p style="margin: 4px 0;">
                 <strong><%= m.getNombreUsuario() %></strong>
-                <small>[<%= m.getFechaHora() %>]</small>:
+                <small>[<%= formatoFecha.format(m.getFechaHora()) %>]</small>:
                 <%= m.getMensaje() %>
             </p>
         <%  }

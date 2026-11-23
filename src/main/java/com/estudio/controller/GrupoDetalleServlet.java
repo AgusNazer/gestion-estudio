@@ -14,8 +14,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.Date;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 @WebServlet("/grupo-detalle")
 public class GrupoDetalleServlet extends HttpServlet {
@@ -25,8 +25,24 @@ public class GrupoDetalleServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String idGrupoParam = request.getParameter("idGrupo");
-        int idGrupo = (idGrupoParam != null && !idGrupoParam.isEmpty()) ? Integer.parseInt(idGrupoParam) : 1;
+        Usuario usuario = obtenerUsuarioLogueado(request);
+        if (usuario == null) {
+            response.sendRedirect("login.jsp");
+            return;
+        }
+
+        int idGrupo;
+        try {
+            idGrupo = Integer.parseInt(request.getParameter("idGrupo"));
+        } catch (NumberFormatException e) {
+            response.sendRedirect("dashboard.jsp");
+            return;
+        }
+
+        if (!esIntegrante(idGrupo, usuario.getIdUsuario())) {
+            response.sendRedirect("dashboard.jsp");
+            return;
+        }
 
         try {
             List<Reunion> reuniones = reunionService.listarReuniones(idGrupo);
@@ -46,18 +62,27 @@ public class GrupoDetalleServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
-        HttpSession session = request.getSession(false);
 
-        Usuario usuario = null;
-        if (session != null) {
-            usuario = (Usuario) session.getAttribute("usuarioLogueado");
-            if (usuario == null) {
-                usuario = (Usuario) session.getAttribute("usuario");
-            }
+        Usuario usuario = obtenerUsuarioLogueado(request);
+        if (usuario == null) {
+            response.sendRedirect("login.jsp");
+            return;
         }
 
-        int idUsuario = (usuario != null) ? usuario.getIdUsuario() : Integer.parseInt(request.getParameter("idUsuario"));
-        int idGrupo = Integer.parseInt(request.getParameter("idGrupo"));
+        int idUsuario = usuario.getIdUsuario();
+        int idGrupo;
+        try {
+            idGrupo = Integer.parseInt(request.getParameter("idGrupo"));
+        } catch (NumberFormatException e) {
+            response.sendRedirect("dashboard.jsp");
+            return;
+        }
+
+        if (!esIntegrante(idGrupo, idUsuario)) {
+            response.sendRedirect("dashboard.jsp");
+            return;
+        }
+
         String accion = request.getParameter("accion");
 
         try {
@@ -66,24 +91,24 @@ public class GrupoDetalleServlet extends HttpServlet {
                 Mensaje nuevoMensaje = new Mensaje(idGrupo, idUsuario, texto);
                 mensajeService.crearMensaje(nuevoMensaje);
                 request.getSession().setAttribute("mensajeExito", "Mensaje enviado correctamente.");
-	            } else if ("reunion".equals(accion)) {
-	                Date fecha = Date.valueOf(request.getParameter("fecha"));
-	                String temas = request.getParameter("temasTratados");
-	                reunionService.crearReunion(idGrupo, fecha, temas);
-	                request.getSession().setAttribute("mensajeExito", "Reunión registrada exitosamente.");
-	            } else if ("reunionRealizada".equals(accion)) {
-	                Date fecha = Date.valueOf(request.getParameter("fecha"));
-	                String temas = request.getParameter("temasTratados");
-	                List<Integer> asistentes = new ArrayList<>();
-	                String[] idsAsistentes = request.getParameterValues("asistentes");
-	                if (idsAsistentes != null) {
-	                    for (String id : idsAsistentes) {
-	                        asistentes.add(Integer.parseInt(id));
-	                    }
-	                }
-	                reunionService.registrarReunionRealizada(idGrupo, fecha, temas, asistentes);
-	                request.getSession().setAttribute("mensajeExito", "Reunión realizada registrada exitosamente.");
-	            }
+            } else if ("reunion".equals(accion)) {
+                Date fecha = Date.valueOf(request.getParameter("fecha"));
+                String temas = request.getParameter("temasTratados");
+                reunionService.crearReunion(idGrupo, fecha, temas);
+                request.getSession().setAttribute("mensajeExito", "Reunión registrada exitosamente.");
+            } else if ("reunionRealizada".equals(accion)) {
+                Date fecha = Date.valueOf(request.getParameter("fecha"));
+                String temas = request.getParameter("temasTratados");
+                List<Integer> asistentes = new ArrayList<>();
+                String[] idsAsistentes = request.getParameterValues("asistentes");
+                if (idsAsistentes != null) {
+                    for (String id : idsAsistentes) {
+                        asistentes.add(Integer.parseInt(id));
+                    }
+                }
+                reunionService.registrarReunionRealizada(idGrupo, fecha, temas, asistentes);
+                request.getSession().setAttribute("mensajeExito", "Reunión realizada registrada exitosamente.");
+            }
         } catch (IllegalArgumentException e) {
             request.getSession().setAttribute("mensajeError", e.getMessage());
         } catch (Exception e) {
@@ -91,5 +116,31 @@ public class GrupoDetalleServlet extends HttpServlet {
         }
 
         response.sendRedirect("grupo-detalle?idGrupo=" + idGrupo);
+    }
+
+    // Usuario que inició sesión, o null si no hay sesión
+    private Usuario obtenerUsuarioLogueado(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session == null) {
+            return null;
+        }
+        Usuario usuario = (Usuario) session.getAttribute("usuarioLogueado");
+        if (usuario == null) {
+            usuario = (Usuario) session.getAttribute("usuario");
+        }
+        return usuario;
+    }
+
+    // El creador y los miembros aceptados son integrantes del grupo
+    private boolean esIntegrante(int idGrupo, int idUsuario) {
+        if (idGrupo <= 0) {
+            return false;
+        }
+        for (Usuario u : reunionService.listarIntegrantes(idGrupo)) {
+            if (u.getIdUsuario() == idUsuario) {
+                return true;
+            }
+        }
+        return false;
     }
 }
