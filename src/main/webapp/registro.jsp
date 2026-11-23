@@ -3,15 +3,15 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>[TEST] Registro</title>
+    <title>Registro</title>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/estilos.css">
 </head>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/css/estilos.css">
 <body>
     <h2>Registro de Usuario</h2>
 
     <% String error = (String) request.getAttribute("error"); %>
     <% if (error != null) { %>
-        <p style="color: red; font-weight: bold;"><%= error %></p>
+        <p class="mensaje-error" role="alert"><%= error %></p>
     <% } %>
 
     <form action="auth" method="post">

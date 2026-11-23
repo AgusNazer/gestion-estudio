@@ -11,23 +11,20 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>[TEST] Dashboard</title>
+    <title>Panel principal</title>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/estilos.css">
 </head>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/css/estilos.css">
 <body>
     <h2>Sesión Iniciada con Éxito</h2>
     <%
-            String resultadoMatch = request.getParameter("resultadoMatch");
-            if (resultadoMatch != null) {
-                boolean esAprobada = resultadoMatch.toLowerCase().contains("aprobada");
-                String colorTexto = esAprobada ? "#155724" : "#721c24";
-                String colorFondo = esAprobada ? "#d4edda" : "#f8d7da";
-                String colorBorde = esAprobada ? "#c3e6cb" : "#f5c6cb";
-        %>
-            <div style="background-color: <%= colorFondo %>; color: <%= colorTexto %>; border: 1px solid <%= colorBorde %>; padding: 12px; margin-bottom: 20px; border-radius: 4px;">
-                <strong>Resultado del Matching (RF4):</strong> <%= resultadoMatch %>
-            </div>
-        <% } %>
+        String resultadoMatch = request.getParameter("resultadoMatch");
+        if (resultadoMatch != null) {
+            boolean esAprobada = resultadoMatch.toLowerCase().contains("aprobada");
+    %>
+        <div class="<%= esAprobada ? "mensaje-exito" : "mensaje-error" %>" role="<%= esAprobada ? "status" : "alert" %>">
+            <strong>Resultado del Matching (RF4):</strong> <%= resultadoMatch %>
+        </div>
+    <% } %>
     <p><strong>ID Usuario:</strong> <%= usuario.getIdUsuario() %></p>
     <p><strong>Nombre:</strong> <%= usuario.getNombre() %> <%= usuario.getApellido() %></p>
     <p><strong>Carrera:</strong> <%= usuario.getCarrera() %></p>

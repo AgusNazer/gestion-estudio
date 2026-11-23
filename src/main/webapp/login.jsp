@@ -3,19 +3,19 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>[TEST] Login</title>
+    <title>Iniciar sesión</title>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/estilos.css">
 </head>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/css/estilos.css">
 <body>
     <h2>Iniciar Sesión</h2>
 
     <% String error = (String) request.getAttribute("error"); %>
     <% if (error != null) { %>
-        <p style="color: red; font-weight: bold;"><%= error %></p>
+        <p class="mensaje-error" role="alert"><%= error %></p>
     <% } %>
 
     <% if (request.getParameter("registro") != null) { %>
-        <p style="color: green; font-weight: bold;">Registro exitoso. Ahora podés iniciar sesión.</p>
+        <p class="mensaje-exito" role="status">Registro exitoso. Ahora podés iniciar sesión.</p>
     <% } %>
 
     <form action="auth" method="post">

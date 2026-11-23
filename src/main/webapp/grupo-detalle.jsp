@@ -32,24 +32,24 @@
     }
 %>
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <title>Grupo de Estudio #<%= idGrupo %></title>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/estilos.css">
 </head>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/css/estilos.css">
 <body>
     <h2>Espacio del Grupo #<%= idGrupo %></h2>
 
     <% if (session.getAttribute("mensajeExito") != null) { %>
-        <div style="background-color: #d4edda; color: #155724; padding: 10px; margin-bottom: 15px; border: 1px solid #c3e6cb;">
+        <div class="mensaje-exito" role="status">
             <strong>Éxito:</strong> <%= session.getAttribute("mensajeExito") %>
         </div>
         <% session.removeAttribute("mensajeExito"); %>
     <% } %>
 
     <% if (session.getAttribute("mensajeError") != null) { %>
-        <div style="background-color: #f8d7da; color: #721c24; padding: 10px; margin-bottom: 15px; border: 1px solid #f5c6cb;">
+        <div class="mensaje-error" role="alert">
             <strong>Error:</strong> <%= session.getAttribute("mensajeError") %>
         </div>
         <% session.removeAttribute("mensajeError"); %>
@@ -127,10 +127,12 @@
             <legend>Participantes presentes:</legend>
             <% if (integrantes != null) {
                 for (Usuario u : integrantes) { %>
-                <label>
-                    <input type="checkbox" name="asistentes" value="<%= u.getIdUsuario() %>">
-                    <%= u.getNombre() %> <%= u.getApellido() %>
-                </label><br>
+                <div>
+    				<label>
+       				 <input type="checkbox" name="asistentes" value="<%= u.getIdUsuario() %>">
+      				  <%= u.getNombre() %> <%= u.getApellido() %>
+    				</label>
+				</div>
             <%  }
                } %>
         </fieldset>

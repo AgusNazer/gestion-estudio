@@ -9,12 +9,12 @@
     }
 %>
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Crear Grupo de Estudio - RF2</title>
+    <title>Crear Grupo de estudio</title>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/estilos.css">
 </head>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/css/estilos.css">
 <body>
 
     <h2>Crear Grupo de Estudio</h2>
@@ -26,7 +26,7 @@
         String error = (String) request.getAttribute("error");
         if (error != null) { 
     %>
-        <p style="color: red;"><strong>Error:</strong> <%= error %></p>
+        <p class="mensaje-error" role="alert"><strong>Error:</strong> <%= error %></p>
     <% } %>
 
     <form action="grupos" method="post">
@@ -85,8 +85,9 @@
         <br>
 
         <button type="submit">Crear Grupo</button>
-        <a href="dashboard.jsp">Volver al Dashboard</a>
     </form>
+    
+    <p><a href="dashboard.jsp">Volver al Dashboard</a></p>
 
 </body>
 </html>

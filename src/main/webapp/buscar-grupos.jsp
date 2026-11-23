@@ -17,12 +17,12 @@
     List<Grupo> listaGrupos = grupoDAO.listarTodos();
 %>
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <title>Listado de Grupos Disponibles</title>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/estilos.css">
 </head>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/css/estilos.css">
 <body>
     <h2>Listado de Grupos de Estudio</h2>
     <p>Usuario conectado: <strong><%= usuario.getNombre() %> <%= usuario.getApellido() %></strong></p>
@@ -43,7 +43,6 @@
                                     grupoDAO.esMiembro(g.getIdGrupo(), usuario.getIdUsuario());
         %>
         <tr>
-         <tr>
                      <td><%= g.getIdGrupo() %></td>
                      <td><%= g.getNombre() %></td>
                      <td><%= g.getMateria() %></td>
@@ -52,9 +51,7 @@
                      <td><%= g.getCupoMaximo() %></td>
                      <td>
                 <% if (pertenece) { %>
-                    <a href="grupo-detalle?idGrupo=<%= g.getIdGrupo() %>">
-                        <button type="button">Entrar al Grupo (Chat y Reuniones)</button>
-                    </a>
+                    <a href="grupo-detalle?idGrupo=<%= g.getIdGrupo() %>">Ir al Grupo</a>
                 <% } else { %>
                     <form action="solicitudes" method="post" style="display:inline;">
                         <input type="hidden" name="idGrupo" value="<%= g.getIdGrupo() %>">
