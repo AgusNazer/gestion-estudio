@@ -35,6 +35,7 @@
             <th>Horario</th>
             <th>Modalidad</th>
             <th>Cupo</th>
+            <th>Espacio Accesible</th>
             <th>Acciones</th>
         </tr>
         <% if (listaGrupos != null && !listaGrupos.isEmpty()) {
@@ -49,6 +50,7 @@
                      <td><%= g.getHorarios() %></td>
                      <td><%= g.getModalidad() %></td>
                      <td><%= g.getCupoMaximo() %></td>
+                     <td><%= g.isEspacioAccesible() ? "Sí" : "No" %></td>
                      <td>
                 <% if (pertenece) { %>
                     <a href="grupo-detalle?idGrupo=<%= g.getIdGrupo() %>">Ir al Grupo</a>

@@ -30,8 +30,8 @@
     <p><strong>Carrera:</strong> <%= usuario.getCarrera() %></p>
     <p><strong>Email:</strong> <%= usuario.getEmail() %></p>
     <p><strong>Pref. Comunicación:</strong> <%= usuario.getPrefComunicacion() %></p>
-    <p><strong>Espacio Accesible:</strong> <%= usuario.isRequiereEspacioAccesible() %></p>
-    <p><strong>Material Digital:</strong> <%= usuario.isPrefMaterialDigital() %></p>
+    <p><strong>Espacio Accesible:</strong> <%= usuario.isRequiereEspacioAccesible() ? "Sí" : "No" %></p>
+    <p><strong>Material Digital:</strong> <%= usuario.isPrefMaterialDigital()? "Sí" : "No" %></p>
     <hr>
 <h3>Acciones</h3>
 <p>
